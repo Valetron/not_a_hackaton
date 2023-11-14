@@ -45,52 +45,83 @@ public class TestingBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
-        Long chatId = update.getMessage().getChatId();
-        String text = update.getMessage().getText();
+        Message message = update.getMessage();
+        Long chatId = message.getChatId();
+        String text = message.getText();
+
+        if (text.equals("/start")) {
+            startCommand(chatId);
+            return;
+        }
 
         switch (statusBot) {
             case AWAITING_COMMAND:
-                switch (text) {
-                    case "/start":
-                        startCommand(chatId);
-                        break;
-                    case "/registration":
-                        registrationCommand(chatId);
-                        break;
-                    case "/my_tests":
-                        try {
-                            execute(new SendMessage(String.valueOf(chatId), "Пока что тут ничего нет"));
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                    case "/help":
-                        try {
-                            execute(new SendMessage(String.valueOf(chatId), "Бэкендеру лЭнь придумывать хелпу," +
-                                    " всё есть в /start"));
-                        }
-                        catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                    default:
-                        unknownCommand(chatId);
-                        break;
-                }
+                command(message);
                 break;
+
             case AWAITING_REGISTRATION:
-                try {
-                    registrationStudent(update.getMessage());
-                } catch (TelegramApiException e) {
-                    throw new RuntimeException(e);
-                }
+                registration(message);
                 break;
+
         }
     }
 
     @Override
     public String getBotUsername() {
         return name;
+    }
+
+    private void registration(Message message) {
+        String text = message.getText();
+        switch (text) {
+            case "/abort":
+                abortRegistration(message.getChatId());
+                break;
+            default:
+                try {
+                    saveAccount(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+    }
+
+    private void command(Message message) {
+        Long chatId = message.getChatId();
+        String text = message.getText();
+        switch (text) {
+            case "/registration":
+                registrationCommand(chatId);
+                break;
+            case "/my_tests":
+                try {
+                    execute(new SendMessage(String.valueOf(chatId), "Пока что тут ничего нет"));
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "/help":
+                try {
+                    execute(new SendMessage(String.valueOf(chatId), "Бэкендеру лЭнь придумывать хелпу," +
+                            " всё есть в /start"));
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                unknownCommand(chatId);
+
+        }
+    }
+
+    private void abortRegistration(Long chatId) {
+        statusBot = StatusBot.AWAITING_COMMAND;
+        try {
+            execute(new SendMessage(String.valueOf(chatId), "Регистрация прервана"));
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
     private void registrationCommand(Long chatId) {
@@ -116,7 +147,7 @@ public class TestingBot extends TelegramLongPollingBot {
         }
     }
 
-    private void registrationStudent(Message message) throws TelegramApiException {
+    private void saveAccount(Message message) throws TelegramApiException {
 
         Long chatId = message.getChatId();
         Long userId = message.getFrom().getId();
@@ -129,6 +160,8 @@ public class TestingBot extends TelegramLongPollingBot {
             Student student = new Student(userId, userName, result[0], result[1], result[2], result[3], result[4]);
             studentRepository.save(student);
             execute(new SendMessage(String.valueOf(chatId), "Вы успешно зарегистрировались"));
+            statusBot = StatusBot.AWAITING_COMMAND;
+
         } catch (ArrayIndexOutOfBoundsException e) {
             execute(new SendMessage(String.valueOf(chatId), "Вы ввели данные в неправельном формате"));
         }
