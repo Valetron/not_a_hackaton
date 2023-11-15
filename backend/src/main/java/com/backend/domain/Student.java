@@ -2,6 +2,9 @@ package com.backend.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Entity(name = "student")
 @Data
@@ -10,11 +13,8 @@ public class Student {
     public Student() {
     }
 
-    ;
-
     public Student(Long chatId, String username, String firstname, String middlename, String surname,
                    String university, String titleGroup) {
-
         this.chatId = chatId;
         this.firstname = firstname;
         this.middlename = middlename;

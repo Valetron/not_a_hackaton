@@ -20,20 +20,13 @@ import java.util.List;
 @Component
 public class TestingBot extends TelegramLongPollingBot {
 
-    private enum StatusBot {
-        AWAITING_REGISTRATION,
-        AWAITING_COMMAND
-    }
-
-    private StatusBot statusBot = StatusBot.AWAITING_COMMAND;
-
+    private BotStatus botStatus = BotStatus.AWAITING_COMMAND;
     @Value("${bot.name}")
     private String name;
     @Autowired
     private StudentRepository studentRepository;
 
     public TestingBot(@Value("${bot.token}") String botToken) {
-
         super(botToken);
         try {
             execute(new SetMyCommands(setMyBotCommand(), new BotCommandScopeDefault(), null));
@@ -44,7 +37,6 @@ public class TestingBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-
         Message message = update.getMessage();
         Long chatId = message.getChatId();
         String text = message.getText();
@@ -53,118 +45,19 @@ public class TestingBot extends TelegramLongPollingBot {
             startCommand(chatId);
             return;
         }
-
-        switch (statusBot) {
+        switch (botStatus) {
             case AWAITING_COMMAND:
-                command(message);
+                choseCommand(message);
                 break;
-
             case AWAITING_REGISTRATION:
-                registration(message);
+                registerUser(message);
                 break;
-
         }
     }
 
     @Override
     public String getBotUsername() {
         return name;
-    }
-
-    private void registration(Message message) {
-        String text = message.getText();
-        switch (text) {
-            case "/abort":
-                abortRegistration(message.getChatId());
-                break;
-            default:
-                try {
-                    saveAccount(message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-                break;
-        }
-    }
-
-    private void command(Message message) {
-        Long chatId = message.getChatId();
-        String text = message.getText();
-        switch (text) {
-            case "/registration":
-                registrationCommand(chatId);
-                break;
-            case "/my_tests":
-                try {
-                    execute(new SendMessage(String.valueOf(chatId), "Пока что тут ничего нет"));
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case "/help":
-                try {
-                    execute(new SendMessage(String.valueOf(chatId), "Бэкендеру лЭнь придумывать хелпу," +
-                            " всё есть в /start"));
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-                break;
-            default:
-                unknownCommand(chatId);
-
-        }
-    }
-
-    private void abortRegistration(Long chatId) {
-        statusBot = StatusBot.AWAITING_COMMAND;
-        try {
-            execute(new SendMessage(String.valueOf(chatId), "Регистрация прервана"));
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void registrationCommand(Long chatId) {
-
-        if (studentRepository.existsById(chatId)) {
-            try {
-                execute(new SendMessage(String.valueOf(chatId), "Вы уже зарегистрированны"));
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                execute(new SendMessage(String.valueOf(chatId), "введите свои данные в формате:\n\n" +
-                        "Имя\n" +
-                        "Фамилия\n" +
-                        "Отчество\n" +
-                        "Университет\n" +
-                        "Группа\n"));
-                statusBot = StatusBot.AWAITING_REGISTRATION;
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void saveAccount(Message message) throws TelegramApiException {
-
-        Long chatId = message.getChatId();
-        Long userId = message.getFrom().getId();
-        String userName = message.getChat().getUserName();
-        String text = message.getText();
-
-        try {
-            String[] result = text.split("\\n+");
-            //                          chatId, username, firstname, midlename, surname, university, title_group
-            Student student = new Student(userId, userName, result[0], result[1], result[2], result[3], result[4]);
-            studentRepository.save(student);
-            execute(new SendMessage(String.valueOf(chatId), "Вы успешно зарегистрировались"));
-            statusBot = StatusBot.AWAITING_COMMAND;
-
-        } catch (ArrayIndexOutOfBoundsException e) {
-            execute(new SendMessage(String.valueOf(chatId), "Вы ввели данные в неправельном формате"));
-        }
     }
 
     private List<BotCommand> setMyBotCommand() {
@@ -177,22 +70,92 @@ public class TestingBot extends TelegramLongPollingBot {
         return botCommands;
     }
 
-    private void startCommand(Long chatId) {
+    private void tryToSendMessage(Long chatId, String text) {
         try {
-            execute(new SendMessage(String.valueOf(chatId), "Приветствую, я бот Gleb для прохождения тестов.\n" +
-                    "Если вы не ещё не зарегистрированны нажмите /registration\n" +
-                    "Что бы посмотреть свои тесты нажмите /my_test"));
+            execute(new SendMessage(String.valueOf(chatId), text));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
 
+    private void choseCommand(Message message) {
+        Long chatId = message.getChatId();
+        String text = message.getText();
+        switch (text) {
+            case "/registration":
+                registrationCommand(chatId);
+                break;
+            case "/my_tests":
+                tryToSendMessage(chatId, "Пока что тут ничего нет");
+                break;
+            case "/help":
+                tryToSendMessage(chatId, "Бэкендеру лЭнь придумывать хелпу," +
+                        " всё есть в /start");
+                break;
+            default:
+                unknownCommand(chatId);
+        }
+    }
+
+    private void startCommand(Long chatId) {
+        tryToSendMessage(chatId, "Приветствую, я бот Gleb для прохождения тестов.\n" +
+                "Если вы не ещё не зарегистрированны нажмите /registration\n" +
+                "Что бы посмотреть свои тесты нажмите /my_test");
+    }
+
+    private void registrationCommand(Long chatId) {
+        if (studentRepository.existsById(chatId)) {
+            tryToSendMessage(chatId, "Вы уже зарегистрированны\n" +
+                    "что бы прервать процесс регистрации нажмите /abort");
+        } else {
+            tryToSendMessage(chatId, "введите свои данные в формате:\n\n" +
+                    "Имя\n" +
+                    "Фамилия\n" +
+                    "Отчество\n" +
+                    "Университет\n" +
+                    "Группа\n");
+            botStatus = BotStatus.AWAITING_REGISTRATION;
+        }
+    }
+
     private void unknownCommand(Long chatId) {
+        tryToSendMessage(chatId, "Извините мне не известна эта команда\n" +
+                "Что бы посмотреть команды с которыми я работаю нажмите /help");
+    }
+
+    private void registerUser(Message message) {
+        String text = message.getText();
+        switch (text) {
+            case "/abort":
+                abortRegistration(message.getChatId());
+                break;
+            default:
+                saveAccount(message);
+                break;
+        }
+    }
+
+    private void abortRegistration(Long chatId) {
+        botStatus = BotStatus.AWAITING_COMMAND;
+        tryToSendMessage(chatId, "Регистрация прервана");
+    }
+
+    private void saveAccount(Message message) {
+        Long chatId = message.getChatId();
+        Long userId = message.getFrom().getId();
+        String username = message.getChat().getUserName();
+        String text = message.getText();
+
         try {
-            execute(new SendMessage(String.valueOf(chatId), "Извините мне не известна эта команда\n" +
-                    "Что бы посмотреть команды с которыми я работаю нажмите /help"));
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
+            String[] result = text.split("\\n+");
+            //                          chatId, username, firstname, midlename, surname, university, title_group
+            Student student = new Student(userId, username, result[0], result[1], result[2], result[3], result[4]);
+            studentRepository.save(student);
+            tryToSendMessage(chatId, "Вы успешно зарегистрировались");
+            botStatus = BotStatus.AWAITING_COMMAND;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            tryToSendMessage(chatId, "Ошибка при регистрации\n" +
+                    "Скорее всего данные введены в неправельном формате");
         }
     }
 }
