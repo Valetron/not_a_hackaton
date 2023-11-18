@@ -1,6 +1,6 @@
 package com.backend.bot;
 
-import com.backend.domain.Student;
+import com.backend.model.Student;
 import com.backend.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,13 +26,14 @@ public class TestingBot extends TelegramLongPollingBot {
     @Autowired
     private StudentRepository studentRepository;
 
-    public TestingBot(@Value("${bot.token}") String botToken) {
+    public TestingBot(@Value("${bot.token}") String botToken, StudentRepository studentRepository) {
         super(botToken);
         try {
             execute(new SetMyCommands(setMyBotCommand(), new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+        this.studentRepository = studentRepository;
     }
 
     @Override
@@ -45,14 +46,14 @@ public class TestingBot extends TelegramLongPollingBot {
             startCommand(chatId);
             return;
         }
-        switch (botStatus) {
-            case AWAITING_COMMAND:
-                choseCommand(message);
-                break;
-            case AWAITING_REGISTRATION:
-                registerUser(message);
-                break;
-        }
+//        switch (botStatus) {
+//            case AWAITING_COMMAND:
+//                choseCommand(message);
+//                break;
+//            case AWAITING_REGISTRATION:
+//                registerUser(message);
+//                break;
+//        }
     }
 
     @Override
@@ -123,39 +124,39 @@ public class TestingBot extends TelegramLongPollingBot {
                 "Что бы посмотреть команды с которыми я работаю нажмите /help");
     }
 
-    private void registerUser(Message message) {
-        String text = message.getText();
-        switch (text) {
-            case "/abort":
-                abortRegistration(message.getChatId());
-                break;
-            default:
-                saveAccount(message);
-                break;
-        }
-    }
+//    private void registerUser(Message message) {
+//        String text = message.getText();
+//        switch (text) {
+//            case "/abort":
+//                abortRegistration(message.getChatId());
+//                break;
+//            default:
+//                saveAccount(message);
+//                break;
+//        }
+//    }
 
     private void abortRegistration(Long chatId) {
         botStatus = BotStatus.AWAITING_COMMAND;
         tryToSendMessage(chatId, "Регистрация прервана");
     }
 
-    private void saveAccount(Message message) {
-        Long chatId = message.getChatId();
-        Long userId = message.getFrom().getId();
-        String username = message.getChat().getUserName();
-        String text = message.getText();
-
-        try {
-            String[] result = text.split("\\n+");
-            //                          chatId, username, firstname, midlename, surname, university, title_group
-            Student student = new Student(userId, username, result[0], result[1], result[2], result[3], result[4]);
-            studentRepository.save(student);
-            tryToSendMessage(chatId, "Вы успешно зарегистрировались");
-            botStatus = BotStatus.AWAITING_COMMAND;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            tryToSendMessage(chatId, "Ошибка при регистрации\n" +
-                    "Скорее всего данные введены в неправельном формате");
-        }
-    }
+//    private void saveAccount(Message message) {
+//        Long chatId = message.getChatId();
+//        Long userId = message.getFrom().getId();
+//        String username = message.getChat().getUserName();
+//        String text = message.getText();
+//
+//        try {
+//            String[] result = text.split("\\n+");
+//            //                          chatId, username, firstname, midlename, surname, university, title_group
+//            Student student = new Student(userId, username, result[0], result[1], result[2], result[3], result[4]);
+//            studentRepository.save(student);
+//            tryToSendMessage(chatId, "Вы успешно зарегистрировались");
+//            botStatus = BotStatus.AWAITING_COMMAND;
+//        } catch (ArrayIndexOutOfBoundsException e) {
+//            tryToSendMessage(chatId, "Ошибка при регистрации\n" +
+//                    "Скорее всего данные введены в неправельном формате");
+//        }
+//    }
 }
