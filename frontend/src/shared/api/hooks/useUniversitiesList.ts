@@ -7,7 +7,7 @@ export const useUniversitiesList = () => {
     isLoading,
     mutate,
     error,
-  } = useSWR<HackathonApi.UniversityOutputDTO[]>('http://192.168.0.106:8080/api/university');
+  } = useSWR<HackathonApi.UniversityOutputDTO[]>(`${import.meta.env.VITE_BASE_BACKEND_URL}/university`);
 
   return {
     universitiesList,

@@ -3,7 +3,7 @@ import Axios, { AxiosError } from 'axios';
 import { HackathonApi } from '@/shared/api/HackathonApi';
 
 export const axios = Axios.create({
-  baseURL: 'http://192.168.0.106:8080/api',
+  baseURL: import.meta.env.VITE_BASE_BACKEND_URL,
   withCredentials: true,
 });
 

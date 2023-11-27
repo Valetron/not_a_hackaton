@@ -8,7 +8,7 @@ export const useQuestionsBase = (subjectId: HackathonApi.SubjectOutputDTO['id'])
     mutate,
     error,
   } = useSWR<HackathonApi.QuestionBaseOutputDTO[]>(
-    subjectId ? `http://192.168.0.106:8080/api/question-base/get-all/${subjectId}` : undefined,
+    subjectId ? `${import.meta.env.VITE_BASE_BACKEND_URL}/question-base/get-all/${subjectId}` : undefined,
   );
 
   return {
