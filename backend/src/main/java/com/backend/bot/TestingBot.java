@@ -1,7 +1,6 @@
 package com.backend.bot;
 
-import com.backend.model.Student;
-import com.backend.repository.StudentRepository;
+import com.backend.model.student.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
