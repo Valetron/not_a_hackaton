@@ -1,5 +1,6 @@
 package com.backend.model.student;
 
+import com.backend.model.activeTest.ActiveTest;
 import com.backend.model.resultTest.ResultTest;
 import com.backend.model.studentGroup.StudentGroup;
 import com.backend.model.test.Test;
@@ -22,5 +23,7 @@ public class Student {
     private String patronymic;
     private String surname;
     @ManyToOne
-    private StudentGroup group;
+    private StudentGroup studentGroup;
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    private List<ActiveTest> activeTests;
 }

@@ -29,7 +29,7 @@ public class StudentGroupService {
         University university = universityRepository.findById(universityId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "университет не найден"));
         StudentGroup studentGroup = convertDtoToEntity.studentGroupToEntity(studentGroupInput);
-
+        studentGroup.setUniversity(university);
         studentGroupRepository.save(studentGroup);
         return convertEntityToDto.studentGroupToDto(studentGroup);
     }

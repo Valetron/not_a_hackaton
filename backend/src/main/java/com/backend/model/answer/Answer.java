@@ -2,6 +2,7 @@ package com.backend.model.answer;
 
 import com.backend.model.answer.dto.AnswerInputDTO;
 import com.backend.model.question.Question;
+import com.backend.model.selectedStudAnswer.SelectedStudAnswer;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,6 +17,8 @@ public class Answer {
     private boolean isCorrect;
     @ManyToOne
     private Question question;
+    @ManyToOne
+    private SelectedStudAnswer selectedStudAnswer;
 
     public void update(AnswerInputDTO answerInputDTO){
         answerText = answerInputDTO.getAnswerText();

@@ -29,6 +29,10 @@ public class Test {
     private Student student;
     @ManyToOne
     private Subject subject;
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
+    private List<QuestionInTest> questions;
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
+    private List<ActiveTest> activeTests;
 
     public void update(TestInputDTO testInputDTO){
         name = testInputDTO.getName();

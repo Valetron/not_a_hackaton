@@ -18,6 +18,8 @@ public class QuestionGroup {
     private String name;
     @ManyToOne
     private QuestionBase questionBase;
+    @OneToMany(mappedBy = "questionGroup", cascade = CascadeType.ALL)
+    private List<Question> questions;
 
     public void update(QuestionGroupInputDTO questionGroupDTO) {
     }

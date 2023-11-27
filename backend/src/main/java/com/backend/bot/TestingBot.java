@@ -1,6 +1,8 @@
 package com.backend.bot;
 
 import com.backend.model.student.StudentRepository;
+import com.backend.model.student.StudentService;
+import com.backend.model.student.dto.StudentInputDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Component
 public class TestingBot extends TelegramLongPollingBot {
@@ -23,16 +26,15 @@ public class TestingBot extends TelegramLongPollingBot {
     @Value("${bot.name}")
     private String name;
     @Autowired
-    private StudentRepository studentRepository;
+    private StudentService studentService;
 
-    public TestingBot(@Value("${bot.token}") String botToken, StudentRepository studentRepository) {
+    public TestingBot(@Value("${bot.token}") String botToken) {
         super(botToken);
         try {
             execute(new SetMyCommands(setMyBotCommand(), new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-        this.studentRepository = studentRepository;
     }
 
     @Override
@@ -43,16 +45,17 @@ public class TestingBot extends TelegramLongPollingBot {
 
         if (text.equals("/start")) {
             startCommand(chatId);
+            botStatus = BotStatus.AWAITING_COMMAND;
             return;
         }
-//        switch (botStatus) {
-//            case AWAITING_COMMAND:
-//                choseCommand(message);
-//                break;
-//            case AWAITING_REGISTRATION:
-//                registerUser(message);
-//                break;
-//        }
+        switch (botStatus) {
+            case AWAITING_COMMAND:
+                choseCommand(message);
+                break;
+            case AWAITING_REGISTRATION:
+                registerUser(message);
+                break;
+        }
     }
 
     @Override
@@ -104,7 +107,7 @@ public class TestingBot extends TelegramLongPollingBot {
     }
 
     private void registrationCommand(Long chatId) {
-        if (studentRepository.existsById(chatId)) {
+        if (studentService.existsStudent(chatId)) {
             tryToSendMessage(chatId, "Вы уже зарегистрированны\n" +
                     "что бы прервать процесс регистрации нажмите /abort");
         } else {
@@ -123,39 +126,42 @@ public class TestingBot extends TelegramLongPollingBot {
                 "Что бы посмотреть команды с которыми я работаю нажмите /help");
     }
 
-//    private void registerUser(Message message) {
-//        String text = message.getText();
-//        switch (text) {
-//            case "/abort":
-//                abortRegistration(message.getChatId());
-//                break;
-//            default:
-//                saveAccount(message);
-//                break;
-//        }
-//    }
+    private void registerUser(Message message) {
+        String text = message.getText();
+        switch (text) {
+            case "/abort":
+                abortRegistration(message.getChatId());
+                break;
+            default:
+                saveAccount(message);
+                break;
+        }
+    }
 
     private void abortRegistration(Long chatId) {
         botStatus = BotStatus.AWAITING_COMMAND;
         tryToSendMessage(chatId, "Регистрация прервана");
     }
 
-//    private void saveAccount(Message message) {
-//        Long chatId = message.getChatId();
-//        Long userId = message.getFrom().getId();
-//        String username = message.getChat().getUserName();
-//        String text = message.getText();
-//
-//        try {
-//            String[] result = text.split("\\n+");
-//            //                          chatId, username, firstname, midlename, surname, university, title_group
-//            Student student = new Student(userId, username, result[0], result[1], result[2], result[3], result[4]);
-//            studentRepository.save(student);
-//            tryToSendMessage(chatId, "Вы успешно зарегистрировались");
-//            botStatus = BotStatus.AWAITING_COMMAND;
-//        } catch (ArrayIndexOutOfBoundsException e) {
-//            tryToSendMessage(chatId, "Ошибка при регистрации\n" +
-//                    "Скорее всего данные введены в неправельном формате");
-//        }
-//    }
+    private void saveAccount(Message message) {
+        Long chatId = message.getChatId();
+        String username = message.getChat().getUserName();
+        String text = message.getText();
+
+        try {
+            String[] result = text.split("\\n+");
+            StudentInputDTO studentInput = new StudentInputDTO(
+                    //chatId, username, name, patronymic, surname, university, title_group
+                    chatId, username, result[0], result[1], result[2], result[3], result[4]);
+            studentService.createStudent(studentInput);
+            tryToSendMessage(chatId, "Вы успешно зарегистрировались");
+            botStatus = BotStatus.AWAITING_COMMAND;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            tryToSendMessage(chatId, "Ошибка при регистрации\n" +
+                    "Данные в неправильном формате\n" +
+                    "Прервать регистрацию /abort");
+        }catch (NoSuchElementException e){
+            tryToSendMessage(chatId, e.getMessage());
+        }
+    }
 }

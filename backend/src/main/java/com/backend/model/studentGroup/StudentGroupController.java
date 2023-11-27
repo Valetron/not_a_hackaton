@@ -1,6 +1,5 @@
 package com.backend.model.studentGroup;
 
-import com.backend.model.student.dto.StudentOutputDTO;
 import com.backend.model.studentGroup.dto.StudentGroupInputDTO;
 import com.backend.model.studentGroup.dto.StudentGroupOutputDTO;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

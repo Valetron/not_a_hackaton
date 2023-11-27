@@ -17,6 +17,9 @@ public class QuestionBase {
     private String name;
     @ManyToOne
     private Subject subject;
+    @OneToMany(mappedBy = "questionBase", cascade = CascadeType.ALL)
+    private List<QuestionGroup> questionGroups;
+
 
     public void update(QuestionBaseInputDTO questionBaseDTO) {
         name = questionBaseDTO.getName();

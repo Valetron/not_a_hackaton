@@ -18,7 +18,12 @@ public class Subject {
     private Long Id;
     private String name;
     @ManyToOne
+    @JoinColumn(name = "university_id")
     private University university;
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+    private List<QuestionBase> questionBases;
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+    private List<Test> tests;
 
     public void update(SubjectInputDTO subjectDTO) {
         name = subjectDTO.getName();

@@ -20,6 +20,8 @@ public class StudentGroup {
     private String name;
     @ManyToOne
     private University university;
+    @OneToMany(mappedBy = "studentGroup", cascade = CascadeType.ALL)
+    private List<Student> students;
 
     public void update(StudentGroupInputDTO studentGroupInput) {
         name = studentGroupInput.getName();

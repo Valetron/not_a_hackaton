@@ -28,6 +28,11 @@ public class Question {
     private double mark;
     @ManyToOne
     private QuestionGroup questionGroup;
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<Answer> answers;
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<QuestionInTest> tests;
+    @ManyToOne
 
     public void update(QuestionInputDTO questionInputDTO){
         questionText = questionInputDTO.getQuestionText();

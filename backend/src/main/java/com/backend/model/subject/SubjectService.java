@@ -38,6 +38,9 @@ public class SubjectService {
         List<Subject> subjects = subjectRepository.findByUniversityId(universityId).orElseThrow(
                 () -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "дисциплины не найдены "));
+
+        University university = universityRepository.findById(universityId).get();
+
         return subjects.stream().map(x -> convertEntityToDto.subjectToDto(x)).toList();
     }
 
