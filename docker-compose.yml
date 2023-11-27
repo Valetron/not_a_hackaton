@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+
+  database:
+    image: postgres:14-alpine
+    container_name: database
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=hackathonDB
+      - POSTGRES_PASSWORD=password

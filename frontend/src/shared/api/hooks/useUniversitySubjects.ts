@@ -8,7 +8,7 @@ export const useUniversitySubjects = (universityId?: HackathonApi.UniversityOutp
     mutate,
     error,
   } = useSWR<HackathonApi.SubjectOutputDTO[]>(
-    universityId ? `http://192.168.0.106:8080/api/subject/get-all/${universityId}` : undefined,
+    universityId ? `${import.meta.env.VITE_BASE_BACKEND_URL}/subject/get-all/${universityId}` : undefined,
   );
 
   return {
