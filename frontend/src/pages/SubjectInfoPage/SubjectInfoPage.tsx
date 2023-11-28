@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, CircularProgress, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, CircularProgress, Tab, Tabs, Typography } from '@mui/material';
 import TabPanel from '@/components/TabPanel/TabPanel';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import React, { SyntheticEvent, useCallback, useEffect, useState } from 'react';
@@ -15,6 +15,8 @@ import {
   StyledButtonWrapper,
   StyledCreationBox,
   StyledCreationQuestions,
+  StyledDisciplineListWrapper,
+  StyledPageContentWrapper,
 } from '@/pages/SubjectInfoPage/SubjectInfoPage.styled';
 import TestAccordionConstructor from '@/components/TestAccordionConstructor/TestAccordionConstructor';
 import CreateTestModal from '@/components/Modal/CreateTestModal/CreateTestModal';
@@ -31,6 +33,7 @@ const SubjectInfoPage = () => {
 
   const [tabValue, setTabValue] = useState(0);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
   const [isOpenTestCreationModal, setIsOpenTestCreationModal] = useState<boolean>(false);
 
   const handleChange = (event: SyntheticEvent, newValue: number) => {
@@ -86,14 +89,16 @@ const SubjectInfoPage = () => {
   }
 
   return (
-    <Card>
+    <Box>
       {isOpen && (
         <AddQuestionBaseModal open={isOpen} onModalSubmit={handleModalSubmit} onModalClose={() => setIsOpen(false)} />
       )}
-      <CardContent>
+      <StyledPageContentWrapper>
         <Typography variant="h4" gutterBottom>
           Дисциплина: {subjectInfo?.name}
         </Typography>
+
+        <Button variant="contained">Редактировать</Button>
 
         <Tabs value={tabValue} onChange={handleChange} aria-label="Университет">
           <Tab label="Базы вопросов" id="tab-1" />
@@ -101,27 +106,33 @@ const SubjectInfoPage = () => {
         </Tabs>
 
         <TabPanel value={tabValue} index={0}>
-          <Button variant="contained" onClick={() => setIsOpen(true)}>
-            Добавить базу вопросов
-          </Button>
-          {questionsBase && questionsBase.length > 0 && (
-            <StyledWrapper>
-              {questionsBase.map((questionBase) => (
-                <ListCard
-                  key={questionBase.id}
-                  item={questionBase}
-                  icon={<StorageSharp color="primary" fontSize="large" />}
-                  onClick={() =>
-                    navigate(
-                      generatePath('/question-base/:id', {
-                        id: String(questionBase.id),
-                      }),
-                    )
-                  }
-                />
-              ))}
-            </StyledWrapper>
-          )}
+          <Box>
+            <StyledButtonWrapper>
+              <Button variant="contained" onClick={() => setIsOpen(true)}>
+                Добавить базу вопросов
+              </Button>
+            </StyledButtonWrapper>
+            <StyledDisciplineListWrapper>
+              {questionsBase && questionsBase.length > 0 && (
+                <StyledWrapper>
+                  {questionsBase.map((questionBase) => (
+                    <ListCard
+                      key={questionBase.id}
+                      item={questionBase}
+                      icon={<StorageSharp color="primary" fontSize="large" />}
+                      onClick={() =>
+                        navigate(
+                          generatePath('/question-base/:id', {
+                            id: String(questionBase.id),
+                          }),
+                        )
+                      }
+                    />
+                  ))}
+                </StyledWrapper>
+              )}
+            </StyledDisciplineListWrapper>
+          </Box>
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
           {isOpenTestCreationModal && (
@@ -151,8 +162,8 @@ const SubjectInfoPage = () => {
             </Button>
           </StyledButtonWrapper>
         </TabPanel>
-      </CardContent>
-    </Card>
+      </StyledPageContentWrapper>
+    </Box>
   );
 };
 

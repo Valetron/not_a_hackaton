@@ -1,7 +1,7 @@
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import React, { SyntheticEvent, useCallback, useEffect, useState } from 'react';
 import { getUniversityById } from '@/shared/api/fetchers/universityFetcher';
-import { Button, Card, CardContent, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Tab, Tabs, Typography } from '@mui/material';
 import { HackathonApi } from '@/shared/api/HackathonApi';
 import { useUniversitySubjects } from '@/shared/api/hooks/useUniversitySubjects';
 import AddSubjectModal from '@/components/Modal/AddSubjectModal/AddSubjectModal';
@@ -11,6 +11,7 @@ import { StyledWrapper } from '@/pages/UniversityInfoPage/UniversityInfoPage.sty
 import ListCard from '@/components/ListCard/ListCard';
 import TabPanel from '@/components/TabPanel/TabPanel';
 import { LocalLibrarySharp } from '@mui/icons-material';
+import { StyledButtonWrapper, StyledDisciplineListWrapper } from '@/pages/SubjectInfoPage/SubjectInfoPage.styled';
 
 const UniversityInfoPage = () => {
   const { id } = useParams();
@@ -41,6 +42,20 @@ const UniversityInfoPage = () => {
     [id],
   );
 
+  const handleEditModalSubmit = useCallback(
+    async (name?: string) => {
+      try {
+        const response = await createSubject(name, Number(id));
+        await mutate([...(subjects || []), response]);
+        successToast('Успешно редактирована сущность');
+        setIsEditOpen(false);
+      } catch {
+        errorToast('Ошибка при редактировании сущности');
+      }
+    },
+    [id],
+  );
+
   useEffect(() => {
     const getUniversity = async () => {
       try {
@@ -54,10 +69,23 @@ const UniversityInfoPage = () => {
   }, []);
 
   return (
-    <Card>
+    <Box>
       {isOpen && (
-        <AddSubjectModal open={isOpen} onModalSubmit={handleModalSubmit} onModalClose={() => setIsOpen(false)} />
+        <AddSubjectModal
+          title="Добавление дисциплины"
+          open={isOpen}
+          onModalSubmit={handleModalSubmit}
+          onModalClose={() => setIsOpen(false)}
+        />
       )}
+      {/*{isEditOpen && (*/}
+      {/*  <AddSubjectModal*/}
+      {/*    title="Редактировать дисциплину"*/}
+      {/*    open={isEditOpen}*/}
+      {/*    onModalSubmit={() => {}}*/}
+      {/*    onModalClose={() => setIsEditOpen(false)}*/}
+      {/*  />*/}
+      {/*)}*/}
       <CardContent>
         <Typography variant="h4" gutterBottom>
           Университет: {universityInfo?.name}
@@ -71,33 +99,38 @@ const UniversityInfoPage = () => {
 
         <Tabs value={tabValue} onChange={handleChange} aria-label="Университет">
           <Tab label="Дисциплины" id="tab-1" />
+          <Tab label="Группы студентов" id="tab-2" />
         </Tabs>
 
         <TabPanel value={tabValue} index={0}>
-          <Button variant="contained" onClick={() => setIsOpen(true)}>
-            Добавить дисциплину
-          </Button>
-          {subjects && subjects.length > 0 && (
-            <StyledWrapper>
-              {subjects.map((subject) => (
-                <ListCard
-                  key={subject.id}
-                  item={subject}
-                  icon={<LocalLibrarySharp color="primary" fontSize="large" />}
-                  onClick={() =>
-                    navigate(
-                      generatePath('/subject/:id', {
-                        id: String(subject.id),
-                      }),
-                    )
-                  }
-                />
-              ))}
-            </StyledWrapper>
-          )}
+          <Box>
+            <StyledButtonWrapper>
+              <Button variant="contained" onClick={() => setIsOpen(true)}>
+                Добавить дисциплину
+              </Button>
+            </StyledButtonWrapper>
+            <StyledDisciplineListWrapper>
+              {subjects &&
+                subjects.length > 0 &&
+                subjects.map((subject) => (
+                  <ListCard
+                    key={subject.id}
+                    item={subject}
+                    icon={<LocalLibrarySharp color="primary" fontSize="large" />}
+                    onClick={() =>
+                      navigate(
+                        generatePath('/subject/:id', {
+                          id: String(subject.id),
+                        }),
+                      )
+                    }
+                  />
+                ))}
+            </StyledDisciplineListWrapper>
+          </Box>
         </TabPanel>
       </CardContent>
-    </Card>
+    </Box>
   );
 };
 
