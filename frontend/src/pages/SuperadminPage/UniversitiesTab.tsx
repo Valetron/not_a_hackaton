@@ -9,6 +9,7 @@ import { useUniversitiesList } from '@/shared/api/hooks/useUniversitiesList';
 import { StyledListWrapper } from '@/components/ItemsList/ItemsList.styled';
 import { StyledTableContainer } from '@/pages/UniversityInfoPage/UniversityInfoPage.styled';
 import ListCard from '@/components/ListCard/ListCard';
+import { StyledButtonWrapper, StyledDisciplineListWrapper } from '@/pages/SubjectInfoPage/SubjectInfoPage.styled';
 
 const UniversitiesTab: React.FC = () => {
   const { universitiesList, isLoading, mutate, error } = useUniversitiesList();
@@ -41,40 +42,31 @@ const UniversitiesTab: React.FC = () => {
   );
 
   return (
-    <>
-      {isOpen && <AddUniversityModal open onModalClose={handleCloseModal} onModalSubmit={onSuccessModalCreate} />}
-      <Box
-        sx={{
-          paddingBottom: '8px',
-        }}
-      >
+    <Box>
+      <StyledButtonWrapper>
         <Button variant={'contained'} onClick={handleOpenModal}>
           Добавить университет
         </Button>
-      </Box>
-
-      <StyledTableContainer>
-        {isLoading && !error && <div>Loading</div>}
-        {error && <div>Fetch error</div>}
-        {!error && !isLoading && universitiesList && (
-          <StyledListWrapper>
-            {universitiesList.map((university) => (
-              <ListCard
-                key={university.id}
-                item={university}
-                onClick={() =>
-                  navigate(
-                    generatePath('/university/:id', {
-                      id: String(university.id),
-                    }),
-                  )
-                }
-              />
-            ))}
-          </StyledListWrapper>
-        )}
-      </StyledTableContainer>
-    </>
+      </StyledButtonWrapper>
+      {isOpen && <AddUniversityModal open onModalClose={handleCloseModal} onModalSubmit={onSuccessModalCreate} />}
+      {!error && !isLoading && universitiesList && (
+        <StyledDisciplineListWrapper>
+          {universitiesList.map((university) => (
+            <ListCard
+              key={university.id}
+              item={university}
+              onClick={() =>
+                navigate(
+                  generatePath('/university/:id', {
+                    id: String(university.id),
+                  }),
+                )
+              }
+            />
+          ))}
+        </StyledDisciplineListWrapper>
+      )}
+    </Box>
   );
 };
 

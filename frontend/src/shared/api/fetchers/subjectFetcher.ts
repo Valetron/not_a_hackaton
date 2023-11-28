@@ -25,3 +25,14 @@ export const getSubjectInfoById = (subjectId: number) =>
       subjectId,
     },
   });
+
+export const pathSubject = (name: HackathonApi.SubjectInputDTO['name'], subjectId: number) =>
+  API.$put(
+    '/subject/{subjectId}',
+    { name },
+    {
+      params: {
+        subjectId,
+      },
+    },
+  );

@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 
 export const StyledCardWrapper = styled(Box)`
   display: flex;
@@ -35,4 +35,8 @@ export const StyledDescription = styled(Box)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+`;
+
+export const StyledEditButton = styled(Button)`
+  font-size: 32px;
 `;

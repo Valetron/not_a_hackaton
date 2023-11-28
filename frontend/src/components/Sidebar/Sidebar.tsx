@@ -3,6 +3,8 @@ import { useState, KeyboardEvent, MouseEvent } from 'react';
 import {
   DrawerNavItem,
   StyledDrawer,
+  StyledDrawerContentWrapper,
+  StyledHeader,
   StyledLink,
   StyledMenuIcon,
   StyledNav,
@@ -26,18 +28,31 @@ const Sidebar = () => {
     <>
       <StyledMenuIcon color={'inherit'} onClick={toggleDrawer(true)} />
       <StyledDrawer anchor={'left'} open={isOpen} onClose={toggleDrawer(false)}>
-        <StyledNav>
-          <DrawerNavItem>
-            <StyledLink to={'/'} onClick={() => setIsOpen(false)}>
-              В хоум
-            </StyledLink>
-          </DrawerNavItem>
-          <DrawerNavItem>
-            <StyledLink to={'/superadmin'} onClick={() => setIsOpen(false)}>
-              В админку
-            </StyledLink>
-          </DrawerNavItem>
-        </StyledNav>
+        <StyledDrawerContentWrapper>
+          <StyledHeader>0xdeadf00d</StyledHeader>
+          <StyledNav>
+            <DrawerNavItem>
+              <StyledLink to={'/'} onClick={() => setIsOpen(false)}>
+                В хоум
+              </StyledLink>
+            </DrawerNavItem>
+            <DrawerNavItem>
+              <StyledLink to={'/superadmin'} onClick={() => setIsOpen(false)}>
+                Университеты
+              </StyledLink>
+            </DrawerNavItem>
+            <DrawerNavItem>
+              <StyledLink to={'/superadmin'} onClick={() => setIsOpen(false)}>
+                Регистрация администрация
+              </StyledLink>
+            </DrawerNavItem>
+            <DrawerNavItem>
+              <StyledLink to={'/superadmin'} onClick={() => setIsOpen(false)}>
+                Регистрация преподавателя
+              </StyledLink>
+            </DrawerNavItem>
+          </StyledNav>
+        </StyledDrawerContentWrapper>
       </StyledDrawer>
     </>
   );

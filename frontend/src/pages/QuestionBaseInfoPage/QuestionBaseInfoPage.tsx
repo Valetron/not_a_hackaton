@@ -7,6 +7,7 @@ import { useQuestionGroups } from '@/shared/api/hooks/useQuestionGroups';
 import { createQuestionGroup } from '@/shared/api/fetchers/questionGroupFetcher';
 import { useToast } from '@/providers/ToastProvider/ToastProvider';
 import { StyledButtonWrapper } from '@/pages/QuestionBaseInfoPage/QuestionBaseInfoPage.styled';
+import { StyledDisciplineListWrapper } from '@/pages/SubjectInfoPage/SubjectInfoPage.styled';
 
 const QuestionBaseInfoPage = () => {
   const { id } = useParams();
@@ -30,7 +31,7 @@ const QuestionBaseInfoPage = () => {
   );
 
   return (
-    <Card>
+    <Box>
       {/*{isOpen && (*/}
       <AddQuestionGroupModal open={isOpen} onModalSubmit={handleModalSubmit} onModalClose={() => setIsOpen(false)} />
       {/*)}*/}
@@ -48,13 +49,15 @@ const QuestionBaseInfoPage = () => {
         {questionGroups && (
           <Box sx={{ padding: '16px' }}>
             Группы вопросов
-            {questionGroups.map((questionGroup) => (
-              <QuestionGroupListItem key={questionGroup.id} questionGroup={questionGroup} />
-            ))}
+            <StyledDisciplineListWrapper>
+              {questionGroups.map((questionGroup) => (
+                <QuestionGroupListItem key={questionGroup.id} questionGroup={questionGroup} />
+              ))}
+            </StyledDisciplineListWrapper>
           </Box>
         )}
       </CardContent>
-    </Card>
+    </Box>
   );
 };
 
