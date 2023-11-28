@@ -14,48 +14,24 @@ export namespace HackathonApi {
     link?: string;
     name?: string;
   }
-  export interface Question {
-    commentCorrect?: string;
-    commentError?: string;
-    commentWithoutAnswer?: string;
-    id?: number;
-    mark?: number;
-    mixAnswer?: boolean;
-    questionGroup?: HackathonApi.QuestionGroup;
-    questionText?: string;
-  }
-  export interface QuestionBase {
-    id?: number;
-    name?: string;
-    subject?: HackathonApi.Subject;
-  }
-  export interface QuestionGroup {
-    id?: number;
-    name?: string;
-    questionBase?: HackathonApi.QuestionBase;
-  }
-  export interface Subject {
-    id?: number;
-    name?: string;
-    university?: HackathonApi.University;
-  }
   export interface TestOutputDTO {
     description?: string;
     duration?: number;
     id?: number;
     link?: string;
     name?: string;
-    questionsList?: HackathonApi.Question[];
-  }
-  export interface University {
-    description?: string;
-    id?: number;
-    name?: string;
   }
   export interface SubjectInputDTO {
     name?: string;
   }
   export interface SubjectOutputDTO {
+    id?: number;
+    name?: string;
+  }
+  export interface StudentGroupInputDTO {
+    name?: string;
+  }
+  export interface StudentGroupOutputDTO {
     id?: number;
     name?: string;
   }
@@ -174,6 +150,23 @@ export interface HackathonApi {
         response: HackathonApi.SubjectOutputDTO;
       };
     };
+    '/student-group/{studentGroupId}': {
+      PUT: {
+        params: {
+          studentGroupId: number;
+        };
+        query: {
+          studentGroupInput: HackathonApi.StudentGroupInputDTO;
+        };
+        response: HackathonApi.StudentGroupOutputDTO;
+      };
+      DELETE: {
+        params: {
+          studentGroupId: number;
+        };
+        response: HackathonApi.StudentGroupOutputDTO;
+      };
+    };
     '/question/{questionId}': {
       PUT: {
         body: HackathonApi.QuestionInputDTO;
@@ -271,7 +264,7 @@ export interface HackathonApi {
         params: {
           testId: number;
         };
-        response: HackathonApi.QuestionOutputDTO;
+        response: HackathonApi.QuestionOutputDTO[];
       };
     };
     '/subject/{universityId}': {
@@ -281,6 +274,21 @@ export interface HackathonApi {
           universityId: number;
         };
         response: HackathonApi.SubjectOutputDTO;
+      };
+    };
+    '/student-group/{universityId}': {
+      GET: {
+        params: {
+          universityId: number;
+        };
+        response: HackathonApi.StudentGroupOutputDTO[];
+      };
+      POST: {
+        body: HackathonApi.StudentGroupInputDTO;
+        params: {
+          universityId: number;
+        };
+        response: HackathonApi.StudentGroupOutputDTO;
       };
     };
     '/question/{questionGroupId}': {
@@ -321,6 +329,13 @@ export interface HackathonApi {
     };
     '/active-test/{testId}': {
       POST: {
+        body: number[];
+        params: {
+          testId: number;
+        };
+        response: HackathonApi.StudentOutputDTO[];
+      };
+      DELETE: {
         body: number[];
         params: {
           testId: number;
@@ -400,13 +415,21 @@ export interface HackathonApi {
         response: HackathonApi.AnswerOutputDTO[];
       };
     };
+    '/active-test/{studentId}': {
+      GET: {
+        params: {
+          studentId: number;
+        };
+        response: HackathonApi.StudentOutputDTO[];
+      };
+    };
     '/test/delete-question/{testId}': {
       DELETE: {
         body: number[];
         params: {
           testId: number;
         };
-        response: HackathonApi.QuestionOutputDTO;
+        response: HackathonApi.QuestionOutputDTO[];
       };
     };
   };
