@@ -7,7 +7,6 @@ export const StyledNav = styled('nav')`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 16px;
 `;
 
 export const StyledHeader = styled(Box)`
@@ -32,8 +31,10 @@ export const StyledDrawerContentWrapper = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
   height: 100%;
+  padding: 16px 0;
 `;
 
 export const StyledMenuIcon = styled(MenuSharp)`

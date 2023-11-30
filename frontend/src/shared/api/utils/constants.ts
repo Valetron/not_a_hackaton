@@ -19,3 +19,9 @@ export const WYSIWYG_TEMPLATE = `## Вопрос
 
 **Ответ отсутствует:** Вы не предоставили ответ.
 `;
+
+export enum ROLES {
+  superadmin = 'SUPERADMIN',
+  admin = 'ADMIN',
+  teacher = 'TEACHER',
+}

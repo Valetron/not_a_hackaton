@@ -19,3 +19,9 @@ export const StyledHeaderContainer = styled(Box)`
   align-items: center;
   justify-content: space-between;
 `;
+
+export const StyledNavbarContainer = styled(Box)`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`;

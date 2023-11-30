@@ -6,9 +6,10 @@ export const StyledCardWrapper = styled(Box)`
   padding: 16px 32px;
   background-color: ${({ theme }) => theme.palette.background.tables};
   border-radius: 16px;
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 500;
   gap: 24px;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.3);
 
   &:hover {
     cursor: pointer;

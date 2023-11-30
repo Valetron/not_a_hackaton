@@ -21,11 +21,10 @@ const ListCard: FC<ListCardProps> = ({ item, onClick, icon }) => {
     <StyledCardWrapper onClick={onClick}>
       <StyledIconBox>{icon || <AccountBalanceSharpIcon color="primary" fontSize="large" />}</StyledIconBox>
       <StyledUniversityContentWrapper>
-        <Typography fontSize="32px">{item?.name || 'Нет имени'}</Typography>
-        <StyledDescription>
-          {item?.description ||
-            'Нет описанияфффффффффффффффффффффффффффффффффффффффффффффффффффффффффффффффффффффффффффффффффф'}
-        </StyledDescription>
+        <Typography fontSize="26px" textTransform="uppercase">
+          {item?.name || 'Нет имени'}
+        </Typography>
+        <StyledDescription>{item?.description || 'Нет описания'}</StyledDescription>
       </StyledUniversityContentWrapper>
     </StyledCardWrapper>
   );

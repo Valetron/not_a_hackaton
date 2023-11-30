@@ -1,12 +1,14 @@
 import { Dispatch, FC, SetStateAction, useState } from 'react';
 import BaseModal from '@/components/Modal/BaseModal';
 import Wysiwyg from '@/components/Wysiwyg/Wysiwyg';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { parseMarkdownStringToQuestion } from '@/shared/api/utils/adapters';
 import { WYSIWYG_TEMPLATE } from '@/shared/api/utils/constants';
 import { createAnswers, createQuestion } from '@/shared/api/fetchers/questionFetcher';
 import { useToast } from '@/providers/ToastProvider/ToastProvider';
 import { HackathonApi } from '@/shared/api/HackathonApi';
+import { StyledBoxWrapper, StyledButton } from '@/components/Modal/AddQuestionModal/AddQuestionModal.styled';
+import { StyledButtonWrapper } from '@/pages/SubjectInfoPage/SubjectInfoPage.styled';
 
 interface AddQuestionModalProps {
   open: boolean;
@@ -39,18 +41,28 @@ const AddQuestionModal: FC<AddQuestionModalProps> = ({ open, onModalClose, quest
   return (
     <BaseModal
       open={open}
-      fullWidth
       title="Добавление вопроса"
       onModalClose={onModalClose}
       styleOverride={{
         padding: '64px 0',
+        height: '720px',
+      }}
+      dialogStyledOverride={{
+        '& .MuiPaper-root': {
+          maxWidth: '1200px',
+          width: '1200px',
+          height: '750px',
+        },
       }}
       data-color-mode="light"
     >
-      <Wysiwyg value={value} dispatchValue={setValue} />
-      <Button variant="contained" onClick={onSubmit}>
-        Добавить вопрос
-      </Button>
+      <StyledBoxWrapper>
+        <Wysiwyg value={value} dispatchValue={setValue} />
+
+        <Button variant="contained" onClick={onSubmit}>
+          Добавить вопрос
+        </Button>
+      </StyledBoxWrapper>
     </BaseModal>
   );
 };

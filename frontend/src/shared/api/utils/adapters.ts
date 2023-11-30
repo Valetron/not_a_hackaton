@@ -21,8 +21,8 @@ export const parseMarkdownStringToQuestion = (markdown: string) => {
     } else if (line.startsWith('**Правильный ответ:**')) {
       const correctAnswer = line.replace('**Правильный ответ:**', '').trim();
       question.answers.forEach((answer) => {
-        if (answer.answerText === correctAnswer) {
-          answer.correct = true;
+        if (answer.name === correctAnswer) {
+          answer.isCorrect = true;
         }
       });
     } else if (line.startsWith('**Ошибка в ответе:**')) {
@@ -32,13 +32,13 @@ export const parseMarkdownStringToQuestion = (markdown: string) => {
     } else if (line.match(/^\d+\.\s*(.+) - правильный$/)) {
       const match = line.match(/^\d+\.\s*(.+) - правильный$/);
       if (match) {
-        const answerText = match[1].trim();
-        currentAnswer = { answerText, correct: true };
+        const name = match[1].trim();
+        currentAnswer = { name, isCorrect: true };
         question.answers.push(currentAnswer);
       }
     } else if (line.startsWith('1.') || line.startsWith('2.') || line.startsWith('3.') || line.startsWith('4.')) {
-      const answerText = line.replace(/^\d+\./, '').trim();
-      currentAnswer = { answerText, correct: false };
+      const name = line.replace(/^\d+\./, '').trim();
+      currentAnswer = { name, isCorrect: false };
       question.answers.push(currentAnswer);
     }
   }

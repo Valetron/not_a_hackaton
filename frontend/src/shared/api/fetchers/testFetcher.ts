@@ -14,3 +14,10 @@ export const addQuestionsToTest = (data: number[], testId: number) =>
       testId,
     },
   });
+
+export const activateTest = (studentsIds: number[], testId: number) =>
+  API.$post('/active-test/{testId}', studentsIds, {
+    params: {
+      testId,
+    },
+  });

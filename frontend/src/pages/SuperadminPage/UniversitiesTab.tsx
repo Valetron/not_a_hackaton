@@ -10,6 +10,7 @@ import { StyledListWrapper } from '@/components/ItemsList/ItemsList.styled';
 import { StyledTableContainer } from '@/pages/UniversityInfoPage/UniversityInfoPage.styled';
 import ListCard from '@/components/ListCard/ListCard';
 import { StyledButtonWrapper, StyledDisciplineListWrapper } from '@/pages/SubjectInfoPage/SubjectInfoPage.styled';
+import CheckTestDetailsModal from '@/components/Modal/CheckTestDetailsModal/CheckTestDetailsModal';
 
 const UniversitiesTab: React.FC = () => {
   const { universitiesList, isLoading, mutate, error } = useUniversitiesList();
@@ -64,6 +65,14 @@ const UniversitiesTab: React.FC = () => {
               }
             />
           ))}
+          {/*<CheckTestDetailsModal*/}
+          {/*  testData={{*/}
+          {/*    testName: 'Название теста',*/}
+          {/*  }}*/}
+          {/*  open={true}*/}
+          {/*  title={'Просмотр теста'}*/}
+          {/*  onModalClose={() => setIsOpen(false)}*/}
+          {/*/>*/}
         </StyledDisciplineListWrapper>
       )}
     </Box>

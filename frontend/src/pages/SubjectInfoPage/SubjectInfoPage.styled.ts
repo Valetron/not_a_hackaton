@@ -1,8 +1,6 @@
 import { Box, styled } from '@mui/material';
 
 export const StyledButtonWrapper = styled(Box)`
-  //margin-top: 16px;
-  display: flex;
   gap: 16px;
   margin-bottom: 8px;
 `;
@@ -35,4 +33,20 @@ export const StyledCreationQuestions = styled(Box)`
   height: 100%;
   box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
   overflow-y: scroll;
+`;
+
+export const StyledQuestionsList = styled(Box)`
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+  overflow-y: scroll;
+`;
+
+export const StyledQuestionBox = styled(Box)`
+  background-color: #fff;
+  text-align: center;
+  padding: 16px;
 `;

@@ -1,15 +1,24 @@
 import { HackathonApi } from '@/shared/api/HackathonApi';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, Checkbox } from '@mui/material';
+import { Accordion, AccordionDetails, Box, Checkbox } from '@mui/material';
+import {
+  StyledAccordionDetails,
+  StyledAccordionDetailsWrapper,
+  StyledAccordionSummary,
+  StyledAccordionWrapper,
+} from '@/components/StudentsAccordion/StudentsAccordion.styled';
+import { useStudents } from '@/shared/api/hooks/useStudents';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface StudentsAccordionProps {
   group: HackathonApi.StudentGroupOutputDTO;
-  onGroupClick: (students: number[], checked: boolean) => void;
-  onStudentClick: (student: number) => void;
+  selectGroup: (students: HackathonApi.StudentOutputDTO[], state: boolean) => void;
+  selectStudent: (student: HackathonApi.StudentOutputDTO, state: boolean) => void;
 }
 
-const StudentsAccordion: FC<StudentsAccordionProps> = ({ group, onGroupClick, onStudentClick }) => {
-  const [students, setStudents] = useState<HackathonApi.StudentOutputDTO[]>([]);
+const StudentsAccordion: FC<StudentsAccordionProps> = ({ group, selectGroup, selectStudent }) => {
+  const { studentsList, isLoading, mutate, error } = useStudents(group.id);
+  const [checkedStudents, setCheckedStudents] = useState<HackathonApi.StudentOutputDTO[]>([]);
 
   const fetchStudentsForGroup = useCallback(async () => {
     try {
@@ -23,31 +32,56 @@ const StudentsAccordion: FC<StudentsAccordionProps> = ({ group, onGroupClick, on
   const handleCheckGroup = (event: ChangeEvent) => {
     // @ts-expect-error - checked существует
     const checkedState = event.target.checked as boolean;
-    onGroupClick(students, checked);
+
+    if (!checkedState) {
+      setCheckedStudents([]);
+    } else {
+      setCheckedStudents(studentsList!);
+    }
+
+    selectGroup(studentsList!, checkedState);
   };
 
-  const handleCheckStudent = (event: ChangeEvent) => {
+  const handleCheckStudent = (event: ChangeEvent, student: HackathonApi.StudentOutputDTO) => {
     // @ts-expect-error - checked существует
     const checkedState = event.target.checked as boolean;
-    // onStudentClick(studentId, checked)
+    console.log(checkedState);
+
+    if (!checkedState) {
+      setCheckedStudents((prev) => prev.filter((st) => st.id !== student.id));
+    } else {
+      setCheckedStudents((prev) => [...prev, student]);
+    }
+
+    selectStudent(student, checkedState);
   };
 
-  useEffect(() => {
-    fetchStudentsForGroup();
-  }, []);
+  useEffect(() => {}, []);
 
   return (
-    <Accordion>
-      <AccordionSummary>
-        {group.name}
-        <Checkbox />
-      </AccordionSummary>
-      {students.map((student) => (
-        <AccordionDetails
-          key={student.id}
-        >{`${student.surname} ${student.name} ${student.patronymic}`}</AccordionDetails>
-      ))}
-    </Accordion>
+    <StyledAccordionWrapper>
+      <Box
+        sx={{
+          alignSelf: 'flex-start',
+        }}
+      >
+        <Checkbox onChange={handleCheckGroup} />
+      </Box>
+      <Accordion title={group.name} sx={{ flex: '1' }}>
+        <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>{group.name}</StyledAccordionSummary>
+        {studentsList
+          ? studentsList.map((student) => (
+              <StyledAccordionDetails key={student.id}>
+                <Checkbox
+                  onChange={(e) => handleCheckStudent(e, student)}
+                  checked={!!checkedStudents.find((st) => st.id === student.id)}
+                />
+                {`${student.name} ${student.surname} ${student.patronymic}`}
+              </StyledAccordionDetails>
+            ))
+          : null}
+      </Accordion>
+    </StyledAccordionWrapper>
   );
 };
 

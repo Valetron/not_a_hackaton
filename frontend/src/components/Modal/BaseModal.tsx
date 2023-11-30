@@ -10,12 +10,21 @@ interface BaseModalProps extends DialogProps {
   title: string;
   onModalClose: () => void;
   styleOverride?: CSSProperties;
+  dialogStyledOverride?: CSSProperties;
 }
 
-const BaseModal = ({ open, title, onModalClose, children, styleOverride, ...rest }: BaseModalProps) => {
+const BaseModal = ({
+  open,
+  title,
+  onModalClose,
+  children,
+  styleOverride,
+  dialogStyledOverride,
+  ...rest
+}: BaseModalProps) => {
   return (
     // @ts-expect-error что-то тут не так
-    <StyledDialog open={open} {...rest} onClose={onModalClose}>
+    <StyledDialog open={open} sx={dialogStyledOverride} {...rest} onClose={onModalClose}>
       <AddUniversityModalStyled sx={styleOverride}>
         <StyledTypographyBox>
           <Typography>{title}</Typography>
