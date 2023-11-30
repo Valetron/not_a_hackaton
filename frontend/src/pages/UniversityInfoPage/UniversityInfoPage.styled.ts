@@ -11,6 +11,7 @@ export const StyledWrapper = styled(Box)`
   gap: 16px;
   justify-content: center;
   padding: 8px 0;
+  max-height: calc(100vh - 400px);
 `;
 
 export const StyledCardWrapper = styled(Box)`

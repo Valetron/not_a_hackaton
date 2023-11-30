@@ -1,8 +1,12 @@
 import { HackathonApi } from '@/shared/api/HackathonApi';
 import { Dispatch, FC, SetStateAction, useCallback, useEffect, useState } from 'react';
 import { getQuestionsByGroupId } from '@/shared/api/fetchers/questionGroupFetcher';
-import { StyledAccordionDetails } from '@/components/TestAccordionConstructor/TestAccordionConstructor.styled';
-import { Add } from '@mui/icons-material';
+import {
+  StyledAccordionDetails,
+  StyledContainer,
+} from '@/components/TestAccordionConstructor/TestAccordionConstructor.styled';
+import { Add, DeleteSharp } from '@mui/icons-material';
+import { Box, Button } from '@mui/material';
 
 interface TestAccordionQuestionsProps {
   questionsGroup: HackathonApi.QuestionGroupOutputDTO;
@@ -40,8 +44,23 @@ const AccordionQuestions: FC<TestAccordionQuestionsProps> = ({
             key={question.id}
             sx={{ bgcolor: selectedQuestions.find((item) => item.id === question.id) ? 'lightgreen' : '' }}
           >
-            <Add />
-            {question.questionText}
+            <StyledContainer>
+              <Add />
+              {question.questionText}
+            </StyledContainer>
+            <StyledContainer>
+              <Button
+                sx={{
+                  color: 'red',
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedQuestion((prev) => prev.filter((q) => q.id !== question.id));
+                }}
+              >
+                <DeleteSharp />
+              </Button>
+            </StyledContainer>
           </StyledAccordionDetails>
         ))}
     </>

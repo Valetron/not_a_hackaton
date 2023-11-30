@@ -8,8 +8,15 @@ export const createQuestion = (data: HackathonApi.QuestionInputDTO, questionGrou
     },
   });
 
-export const createAnswers = (data: HackathonApi.AnswerInputDTO[], questionId: number) =>
-  API.$post('/answer/{questionId}', data, {
+export const createAnswers = (data: HackathonApi.AnswerInputDTO[], questionIds: number) =>
+  API.$post('/answer/{questionIds}', data, {
+    params: {
+      questionIds,
+    },
+  });
+
+export const getAnswersForQuesiton = (questionId: number) =>
+  API.$get('/result-answer/{questionId}', {
     params: {
       questionId,
     },

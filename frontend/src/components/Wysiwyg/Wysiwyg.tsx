@@ -10,7 +10,7 @@ interface WysiwygProps {
 const Wysiwyg: FC<WysiwygProps> = ({ value, dispatchValue }) => {
   return (
     <Box>
-      <MDEditor value={value} onChange={dispatchValue} />
+      <MDEditor value={value} onChange={dispatchValue} height={600} />
     </Box>
   );
 };

@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Button } from '@mui/material';
 import BaseForm from '@/components/Form/BaseForm';
 import { StyledTextHelper } from '@/pages/RegistrationPage/RegistrationPage.styled';
 import { StyledInput } from '@/pages/Login/LoginPage.styled';
 import { useToast } from '@/providers/ToastProvider/ToastProvider';
+import { useUserStore } from '@/shared/store/userStore';
 
 interface LoginFormInputs {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -15,16 +16,21 @@ const LoginPage: React.FC = () => {
   const { control, handleSubmit, formState } = useForm<LoginFormInputs>();
   const { successToast, errorToast } = useToast();
 
-  const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
-    successToast('Успешная регистрация');
-    // Обработка отправки формы, например, вызов API для проверки учетных данных
-    console.log(data);
+  const loginUser = useUserStore((state) => state.logIn);
+
+  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
+    try {
+      await loginUser(data);
+      successToast('Успешная авторизация');
+    } catch {
+      errorToast('Ошибка');
+    }
   };
 
   return (
     <BaseForm formTitle="Вход" onSubmit={handleSubmit(onSubmit)}>
       <Controller
-        name="username"
+        name="email"
         control={control}
         defaultValue=""
         rules={{ required: true }}
@@ -33,14 +39,12 @@ const LoginPage: React.FC = () => {
             <StyledInput
               {...field}
               variant="outlined"
-              id="username"
-              label="Имя пользователя"
+              id="email"
+              label="Электронная почта"
               autoFocus
-              error={!!formState.errors.username}
+              error={!!formState.errors.email}
             />
-            {formState.errors.username && (
-              <StyledTextHelper error>Это поле обязательно для заполнения</StyledTextHelper>
-            )}
+            {formState.errors.email && <StyledTextHelper error>Это поле обязательно для заполнения</StyledTextHelper>}
           </Box>
         )}
       />

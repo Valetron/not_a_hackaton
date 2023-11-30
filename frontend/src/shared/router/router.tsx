@@ -5,8 +5,9 @@ import SuperadminPage from '@/pages/SuperadminPage';
 import UniversityInfoPage from '@/pages/UniversityInfoPage';
 import SubjectInfoPage from '@/pages/SubjectInfoPage';
 import QuestionBaseInfoPage from '@/pages/QuestionBaseInfoPage';
+import StudentInfoPage from '@/pages/StudentInfoPage/StudentInfoPage';
 
-export const router = [
+const unsignedRoutes = [
   {
     path: '/login',
     element: <LoginPage />,
@@ -15,20 +16,52 @@ export const router = [
     path: '/register',
     element: <RegistrationPage />,
   },
+];
+
+export const superAdminRoutes = [
   {
     path: '/superadmin',
     element: <SuperadminPage />,
   },
   {
-    path: '/university/:id',
+    path: '/university/:universityId',
     element: <UniversityInfoPage />,
   },
   {
-    path: '/subject/:id',
+    path: '/university/:universityId/subject/:subjectId',
     element: <SubjectInfoPage />,
   },
   {
-    path: '/question-base/:id',
+    path: '/university/:universityId/subject/:subjectId/questionBase/:questionBaseId',
     element: <QuestionBaseInfoPage />,
   },
+  {
+    path: '/university/:universityId/student/:studentId',
+    element: <StudentInfoPage />,
+  },
 ];
+
+export const teacherRoutes = [
+  {
+    path: '/university/:universityId',
+    element: <UniversityInfoPage />,
+  },
+  {
+    path: '/university/:universityId/subject/:subjectId',
+    element: <SubjectInfoPage />,
+  },
+  {
+    path: '/university/:universityId/subject/:subjectId/questionBase/:questionBaseId',
+    element: <QuestionBaseInfoPage />,
+  },
+  {
+    path: '/university/:universityId/student/:studentId',
+    element: <StudentInfoPage />,
+  },
+];
+
+export const getRouterByRole = {
+  SUPERADMIN: superAdminRoutes,
+  TEACHER: teacherRoutes,
+  UNSIGNED: unsignedRoutes,
+};
