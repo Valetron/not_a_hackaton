@@ -19,4 +19,7 @@ public interface ActiveTestRepository extends JpaRepository<ActiveTest, Long> {
     @Query("SELECT at.test FROM ActiveTest at WHERE at.student.id = :studentId")
     List<Test> findAllTestsByStudentId(@Param("studentId") Long studentId);
 
+    @Query("SELECT at.test FROM ActiveTest at WHERE at.student.chatId = :studentChatId")
+    List<Test> findAllTestsByStudentChatId(@Param("studentChatId") Long studentChatId);
+
 }

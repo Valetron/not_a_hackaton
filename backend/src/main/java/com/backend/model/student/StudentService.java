@@ -9,6 +9,7 @@ import com.backend.model.studentGroup.StudentGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -39,5 +40,15 @@ public class StudentService {
         return studentRepository.existsByChatId(chatId);
     }
 
+    public List<StudentOutputDTO> getAllStudents(Long groupId){
+        List<Student> students = studentRepository.findAllByStudentGroupId(groupId);
+        List<StudentOutputDTO> studentOutputDTOs = students.stream().map(convertEntityToDto::studentToDto).toList();
+        return studentOutputDTOs;
+    }
 
+    public StudentOutputDTO geInfoStudent(Long studentId){
+        Student students = studentRepository.findById(studentId).get();
+        StudentOutputDTO studentOutputDTO = convertEntityToDto.studentToDto(students);
+        return studentOutputDTO;
+    }
 }

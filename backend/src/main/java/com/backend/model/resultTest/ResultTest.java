@@ -1,6 +1,7 @@
 package com.backend.model.resultTest;
 
-import com.backend.model.studentAnswer.StudentAnswer;
+import com.backend.model.resultQuestion.ResultQuestion;
+import com.backend.model.student.Student;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,12 +16,17 @@ public class ResultTest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany
-    private List<StudentAnswer> studentAnswers;
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
+    private List<ResultQuestion> questions;
+    @ManyToOne
+    private Student student;
+    private String testName;
     private Duration duration;
-    private double mark;
+    private Double mark;
     private LocalDateTime beginningTest;
     private LocalDateTime endingTest;
-    private boolean percent;
+    private Double percent;
     private int correctCount;
 }
+
+

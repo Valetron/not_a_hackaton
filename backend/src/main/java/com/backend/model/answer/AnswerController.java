@@ -20,7 +20,7 @@ public class AnswerController {
     @PostMapping("/{questionIds}")
     @ApiResponse(responseCode = "200", description = "Successful Operation",
             content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = AnswerOutputDTO.class)))
+            array = @ArraySchema(schema = @Schema(implementation = AnswerOutputDTO.class))))
     public List<AnswerOutputDTO> createAnswer(@PathVariable Long questionIds, @RequestBody AnswerInputDTO[] answerDTOs){
         return answerService.createAnswer(questionIds, answerDTOs);
     }

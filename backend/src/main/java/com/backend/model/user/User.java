@@ -22,7 +22,6 @@ public class User {
     private String description;
     @Column(unique = true)
     private String email;
-    private String telegram;
     private String phone;
     private String password;
     @OneToOne
