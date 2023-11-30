@@ -14,10 +14,9 @@ public class UserInputDTO {
     private String patronymic;
     private String description;
     private String email;
-    private String telegram;
     private String phone;
-    private String university;
+    private Long universityId;
+    private String password;
     private String role;
-    private List<String> studentGroups;
 
 }

@@ -22,6 +22,8 @@ public class Student {
     private String name;
     private String patronymic;
     private String surname;
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    private List<ResultTest> resultTests;
     @ManyToOne
     private StudentGroup studentGroup;
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)

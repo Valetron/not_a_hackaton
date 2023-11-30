@@ -15,5 +15,4 @@ public class TestOutputDTO {
     private String link;
     private String description;
     private int duration;
-    private List<Question> questionsList;
 }

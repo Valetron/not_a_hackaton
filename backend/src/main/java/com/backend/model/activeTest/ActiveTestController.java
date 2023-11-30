@@ -1,8 +1,6 @@
 package com.backend.model.activeTest;
 
-import com.backend.model.question.dto.QuestionOutputDTO;
 import com.backend.model.student.dto.StudentOutputDTO;
-import com.backend.model.test.Test;
 import com.backend.model.test.dto.TestOutputDTO;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,7 +21,7 @@ public class ActiveTestController {
     @PostMapping("/{testId}")
     @ApiResponse(responseCode = "200", description = "Successful Operation",
             content = @Content(mediaType = "application/json",
-            schema = @Schema(implementation = StudentOutputDTO.class)))
+            array = @ArraySchema(schema = @Schema(implementation = StudentOutputDTO.class))))
     public List<StudentOutputDTO> addTests(@PathVariable Long testId, @RequestBody Long[] studentIdList){
         return activeTestService.addTests(testId, studentIdList);
     }
@@ -33,7 +31,7 @@ public class ActiveTestController {
             content = @Content(mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = StudentOutputDTO.class))))
     public List<TestOutputDTO> getAllTests(@PathVariable Long studentId){
-        return activeTestService.getAllTests(studentId);
+        return activeTestService.getAllTestsByStudentId(studentId);
     }
 
     @DeleteMapping("/{testId}")

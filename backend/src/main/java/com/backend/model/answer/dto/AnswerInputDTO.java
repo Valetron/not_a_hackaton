@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class AnswerInputDTO {
 
-    private String answerText;
-    private boolean isCorrect;
+    private String name;
+    private Boolean isCorrect;
 }

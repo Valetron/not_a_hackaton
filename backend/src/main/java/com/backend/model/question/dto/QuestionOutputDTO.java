@@ -14,5 +14,5 @@ public class QuestionOutputDTO {
     private String commentError;
     private String commentWithoutAnswer;
     private boolean mixAnswer;
-    private double mark;
+    private Double mark;
 }

@@ -6,6 +6,6 @@ import lombok.Data;
 public class AnswerOutputDTO {
 
     private Long id;
-    private String answerText;
-    private boolean isCorrect;
+    private String name;
+    private Boolean isCorrect;
 }

@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface QuestionInTestRepository extends JpaRepository<QuestionInTest, Long> {
     Optional<QuestionInTest> findByTestAndQuestion(Test test, Question question);
-    @Query("SELECT qit.question FROM QuestionInTest qit WHERE qit.test = :test")
-    List<Question> findQuestionsByTest(@Param("test") Test test);
+
+    List<QuestionInTest> findQuestionInTestByTestId(Long testId);
+
 }

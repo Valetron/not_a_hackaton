@@ -2,7 +2,7 @@ package com.backend.model.answer;
 
 import com.backend.model.answer.dto.AnswerInputDTO;
 import com.backend.model.question.Question;
-import com.backend.model.selectedStudAnswer.SelectedStudAnswer;
+import com.backend.model.selectedStudAnswer.SelectedAnswer;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,15 +13,13 @@ public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String answerText;
-    private boolean isCorrect;
+    private String name;
+    private Boolean isCorrect;
     @ManyToOne
     private Question question;
-    @ManyToOne
-    private SelectedStudAnswer selectedStudAnswer;
 
     public void update(AnswerInputDTO answerInputDTO){
-        answerText = answerInputDTO.getAnswerText();
-        isCorrect = answerInputDTO.isCorrect();
+        name = answerInputDTO.getName();
+        isCorrect = answerInputDTO.getIsCorrect();
     }
 }

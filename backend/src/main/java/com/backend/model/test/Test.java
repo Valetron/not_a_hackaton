@@ -26,8 +26,6 @@ public class Test {
     private String description;
     private int duration;
     @ManyToOne
-    private Student student;
-    @ManyToOne
     private Subject subject;
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
     private List<QuestionInTest> questions;

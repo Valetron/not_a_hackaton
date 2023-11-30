@@ -22,6 +22,7 @@ import java.util.List;
 @Service
 public class TestServise {
 
+
     @Autowired
     private TestRepository testRepository;
     @Autowired
@@ -61,14 +62,14 @@ public class TestServise {
 
     public List<TestOutputDTO> getAllTests(Long subjectId){
         List<Test> tests = testRepository.findBySubjectId(subjectId);
-        
-        List<TestOutputDTO> testOutputDTOs = new ArrayList<>();
-        for (Test test: tests) {
-            TestOutputDTO testOutputDTO = convertEntityToDto.testToDto(test);
-            testOutputDTO.setQuestionsList(questionInTestRepository.findQuestionsByTest(test));
-            testOutputDTOs.add(testOutputDTO);
-        }
-        return testOutputDTOs;
+
+        return tests.stream().map(convertEntityToDto::testToDto).toList();
+    }
+
+    public TestOutputDTO getTest(Long testId){
+        Test test = testRepository.findById(testId).orElseThrow(
+                RuntimeException::new);
+        return convertEntityToDto.testToDto(test);
     }
 
     public List<QuestionOutputDTO> addQuestions(Long testId , Long[] questionIds){
